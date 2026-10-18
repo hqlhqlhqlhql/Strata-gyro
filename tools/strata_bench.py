@@ -561,7 +561,7 @@ def detect_quant(view: dict) -> str | None:
 
 def project_version() -> str | None:
     try:
-        m = re.search(r"project\(strata VERSION ([\d.]+)", (ROOT / "CMakeLists.txt").read_text())
+        m = re.search(r"project\(strata VERSION ([\d.]+)", (ROOT / "CMakeLists.txt").read_text(encoding="utf-8", errors="replace"))
         return m.group(1) if m else None
     except OSError:
         return None
@@ -973,7 +973,8 @@ def main(argv=None) -> int:
     if a.url:
         base = a.url.rstrip("/")
     else:
-        base = server_base(cfg.get("host"), a.port or int(cfg.get("port", 8080)))
+        port = a.port or int(cfg.get("port", 8080))
+        base = server_base(cfg.get("host"), port)
     red = redactor(key=key)
     started = False
     try:
